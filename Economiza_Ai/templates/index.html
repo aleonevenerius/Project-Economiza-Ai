@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ==================================================
+         SEÇÃO 1 — CONFIGURAÇÕES INICIAIS DA PÁGINA
+         Aqui ficam o idioma, a codificação e o título.
+    =================================================== -->
+
+    <meta charset="UTF-8">
+
+    <!-- Faz a página se adaptar a celulares e computadores -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Cor da barra do navegador em dispositivos compatíveis -->
+    <meta name="theme-color" content="#203c86">
+
+    <!-- Nome que aparece na aba do navegador -->
+    <title>Economiza Ai</title>
+
+
+    <!-- ==================================================
+         SEÇÃO 2 — CSS: ESTILO VISUAL DA PÁGINA
+         Todo o CSS está dentro desta tag <style>.
+         Para alterar o visual, procure as seções abaixo.
+    =================================================== -->
+
+    <style>
+
+        /* --------------------------------------------------
+           2.1 — RESET
+           Remove margens e espaçamentos padrão do navegador.
+        -------------------------------------------------- */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* --------------------------------------------------
+           2.2 — VARIÁVEIS DE CORES
+           LOCALIZAÇÃO DAS CORES PRINCIPAIS DO PROJETO.
+
+           Para trocar uma cor, altere o valor hexadecimal.
+           Exemplo: --roxo: #ff00ff;
+        -------------------------------------------------- */
+
+        :root {
+            --azul-escuro: #071b55; /* Fundo dos cartões */
+            --azul-card: #102b70;   /* Azul secundário */
+            --azul-claro: #7fa7ff;  /* Azul dos detalhes */
+            --roxo: #d000ff;        /* Botão flutuante */
+            --texto: #ffffff;       /* Texto branco */
+            --texto-suave: #aabde9; /* Texto secundário */
+        }
+
+
+        /* --------------------------------------------------
+           2.3 — FUNDO GERAL DA PÁGINA
+           Altere aqui o degradê que aparece atrás do painel.
+        -------------------------------------------------- */
+
+body {
+    min-height: 100vh;
+    padding: 20px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #ffffff;
+
+    background:
+        radial-gradient(ellipse at 15% 10%, #829eff, transparent 42%),
+        radial-gradient(ellipse at 90% 85%, #b9a2ff, transparent 40%),
+        linear-gradient(145deg, #244ba0, #617ed0 50%, #a4b6ef);
+}
+
+        /* Remove o destaque de toque padrão em celulares */
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
+        /* --------------------------------------------------
+           2.4 — PAINEL PRINCIPAL
+           Controla a largura, a altura, as bordas e a sombra
+           do painel azul que envolve todo o dashboard.
+
+           Para deixar o painel mais largo, altere max-width.
+           Para arredondar mais os cantos, altere border-radius.
+        -------------------------------------------------- */
+
+        .app {
+            width: 100%;
+            max-width: 320px; /* Largura aproximada de um iPhone pequeno */
+            min-height: 600px;
+            margin: 0 auto;
+            padding: 22px 15px 25px;
+            border-radius: 38px;
+            background: rgba(31, 61, 137, 0.92);
+            border: 2px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 50px rgba(7, 20, 68, 0.30);
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(20px);
+        }
+
+        /* Estilo dos botões e links do cabeçalho */
+        .icon-button {
+            border: 0;
+            background: transparent;
+            color: #dce7ff;
+            font-size: 23px;
+            cursor: pointer;
+            padding: 5px;
+            text-decoration: none;
+        }
+
+        /* Agrupa os atalhos à direita */
+        .top-actions {
+            display: flex;
+            gap: 17px;
+        }
+
+        /* Círculo com a letra do perfil */
+        .profile-icon {
+            width: 36px;
+            height: 36px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+            background: rgba(255,255,255,0.13);
+
+            color: #fff;
+            font-weight: 700;
+        }
+
+
+        /* ==================================================
+           SEÇÃO 4 — SAUDAÇÃO E TÍTULO
+           Altere os textos diretamente no HTML mais abaixo.
+        =================================================== */
+
+        .greeting {
+            margin-bottom: 27px;
+        }
+
+        /* Texto pequeno acima do título */
+        .greeting .eyebrow {
+            color: #b6c9ff;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 9px;
+        }
+
+        /* Título principal do dashboard */
+        .greeting h1 {
+            font-size: 25px;
+            line-height: 1.3;
+            font-weight: 750;
+            letter-spacing: -0.6px;
+        }
+
+        /* Descrição abaixo do título */
+        .greeting p {
+            margin-top: 8px;
+            color: #c4d3ff;
+            font-size: 13px;
+        }
+
+
+        /* ==================================================
+           SEÇÃO 5 — TÍTULOS DAS SEÇÕES
+           Usado em Categorias, Resumo mensal e Registros.
+        =================================================== */
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 13px;
+        }
+
+        /* Nome da seção */
+        .section-heading h2 {
+            font-size: 10px;
+            font-weight: 600;
+            color: #b4c8ff;
+            text-transform: uppercase;
+            letter-spacing: 1.7px;
+        }
+
+        /* Link de atalho de cada seção */
+        .section-heading a {
+            color: #d9e3ff;
+            font-size: 11px;
+            text-decoration: none;
+        }
+
+
+        /* ==================================================
+           SEÇÃO 6 — CARTÕES DE ÁGUA E ENERGIA
+           Estes cartões recebem os totais calculados no Python.
+        =================================================== */
+
+        /* Organiza os dois cartões lado a lado */
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        /* Aparência de cada cartão */
+        .category {
+            position: relative;
+            overflow: hidden;
+
+            min-width: 0;
+            min-height: 142px;
+
+            padding: 17px 13px 15px;
+            border-radius: 19px;
+
+            background: linear-gradient(
+                145deg,
+                rgba(8, 28, 81, 0.98),
+                rgba(12, 39, 105, 0.98)
+            );
+
+            box-shadow: 0 8px 16px rgba(5, 18, 61, 0.23);
+        }
+
+        /* Linha superior do cartão */
+        .category-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        /* Ícone de cada recurso */
+        .category-icon {
+            width: 33px;
+            height: 33px;
+
+            border-radius: 11px;
+
+            display: grid;
+            place-items: center;
+
+            font-size: 17px;
+            background: rgba(255,255,255,0.09);
+        }
+
+        /* Texto secundário dos cartões */
+        .category-label {
+            color: #9bb5f6;
+            font-size: 10px;
+        }
+
+        /* Nome do recurso: Água ou Energia */
+        .category h3 {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        /* Valor monetário do cartão */
+        .category .amount {
+            font-size: 17px;
+            font-weight: 750;
+            margin-top: 5px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Cor da borda superior do cartão de água */
+        .card-agua {
+            border-top: 4px solid #2563eb;
+        }
+
+        /* Cor da borda superior do cartão de energia */
+        .card-energia {
+            border-top: 4px solid #ea580c;
+        }
+
+        /* Barra de progresso decorativa */
+        .progress {
+            width: 100%;
+            height: 4px;
+            margin-top: 15px;
+
+            background: rgba(255,255,255,0.13);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Preenchimento da barra */
+        .progress span {
+            display: block;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* Degradê azul da água */
+        .water-progress {
+            background: linear-gradient(90deg, #00c6ff, #547cff);
+        }
+
+        /* Degradê roxo da energia */
+        .energy-progress {
+            background: linear-gradient(90deg, #a855f7, #ed4cff);
+        }
+
+
+        /* ==================================================
+           SEÇÃO 7 — ESPAÇAMENTO ENTRE BLOCOS
+           Controla a distância entre as seções.
+        =================================================== */
+
+        .section {
+            margin-bottom: 29px;
+        }
+
+
+        /* ==================================================
+           SEÇÃO 8 — CARTÃO DO TOTAL GERAL
+           Exibe a soma de água e energia.
+        =================================================== */
+
+        .total-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+
+            padding: 16px;
+            margin-bottom: 25px;
+
+            border-radius: 17px;
+            background: rgba(8, 28, 82, 0.60);
+
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        /* Texto explicativo do total */
+        .total-banner p {
+            font-size: 12px;
+            color: #b6c9ff;
+        }
+
+        /* Valor total em destaque */
+        .total-banner h2 {
+            margin-top: 6px;
+            font-size: 23px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Ícone decorativo do total */
+        .total-icon {
+            display: grid;
+            place-items: center;
+
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+
+            border-radius: 14px;
+            background: rgba(0, 214, 170, 0.14);
+
+            font-size: 22px;
+        }
+
+
+        /* ==================================================
+           SEÇÃO 9 — RESUMO MENSAL
+           Mostra os gastos de cada mês em cartões separados.
+        =================================================== */
+
+        /* Lista vertical dos meses */
+        .month-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Cartão de um mês */
+        .month-card {
+            padding: 15px;
+            border-radius: 16px;
+
+            background: linear-gradient(
+                110deg,
+                rgba(6, 25, 76, 0.92),
+                rgba(15, 41, 106, 0.95)
+            );
+
+            border: 1px solid rgba(255,255,255,0.04);
+            box-shadow: 0 5px 12px rgba(4, 16, 54, 0.12);
+        }
+
+        /* Linha superior do cartão mensal */
+        .month-top {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        /* Ícone do mês */
+        .month-symbol {
+            width: 35px;
+            height: 35px;
+            flex-shrink: 0;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+            background: rgba(142, 111, 255, 0.16);
+            color: #bd9cff;
+            font-size: 17px;
+        }
+
+        /* Área com nome e descrição do mês */
+        .month-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Nome do mês */
+        .month-info h3 {
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        /* Descrição do mês */
+        .month-info p {
+            margin-top: 4px;
+            font-size: 10px;
+            color: #9fb6f0;
+        }
+
+        /* Total mensal alinhado à direita */
+        .month-total {
+            text-align: right;
+            font-size: 13px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        /* Valores de água e energia dentro do cartão */
+        .month-details {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+
+            margin: 14px 0 0 46px;
+            padding-top: 11px;
+
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* Rótulos dos valores mensais */
+        .month-details span {
+            font-size: 10px;
+            color: #a9bdea;
+        }
+
+        /* Valores monetários mensais */
+        .month-details strong {
+            display: block;
+            color: #e4ebff;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* Cor do texto de água */
+        .water-text {
+            color: #6bcfff !important;
+        }
+
+        /* Cor do texto de energia */
+        .energy-text {
+            color: #e1a0ff !important;
+        }
+
+
+        /* ==================================================
+           SEÇÃO 10 — REGISTROS DIÁRIOS EXPANSÍVEIS
+           O usuário abre esta área para ver cada lançamento.
+        =================================================== */
+
+        /* Caixa que contém os registros */
+        .details-panel {
+            background: rgba(5, 24, 73, 0.48);
+            border-radius: 17px;
+            overflow: hidden;
+        }
+
+        /* Cabeçalho clicável da caixa */
+        .details-panel summary {
+            list-style: none;
+            cursor: pointer;
+
+            padding: 17px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        /* Remove o marcador padrão do navegador */
+        .details-panel summary::-webkit-details-marker {
+            display: none;
+        }
+
+        /* Sinal de mais quando a lista está fechada */
+        .details-panel summary::after {
+            content: "+";
+            font-size: 20px;
+            color: #df4cff;
+        }
+
+        /* Sinal de menos quando a lista está aberta */
+        .details-panel[open] summary::after {
+            content: "−";
+        }
+
+        /* Espaçamento interno dos registros */
+        .records {
+            padding: 0 12px 12px;
+        }
+
+        /* Linha individual de um lançamento */
+        .record {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 12px 5px;
+
+            border-top: 1px solid rgba(255,255,255,0.07);
+        }
+
+        /* Ícone de água ou energia do lançamento */
+        .record-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+        }
+
+        /* Área com recurso, data e mês */
+        .record-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Nome do recurso */
+        .record-info strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        /* Data e mês do lançamento */
+        .record-info small {
+            display: block;
+            margin-top: 4px;
+            color: #a5b9eb;
+            font-size: 10px;
+        }
+
+        /* Valor individual do lançamento */
+        .record-value {
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Mensagem para quando não existem registros */
+        .empty {
+            padding: 15px 5px;
+            color: #bdcafa;
+            font-size: 12px;
+        }
+
+
+        /* ==================================================
+           SEÇÃO 11 — RODAPÉ
+           Texto exibido ao final do dashboard.
+        =================================================== */
+
+        .footer {
+            padding: 23px 0 55px;
+            text-align: center;
+            color: #aabce8;
+            font-size: 10px;
+        }
+
+
+        /* SEÇÃO 12 — Botão flutuante removido conforme solicitado. */
+
+        
+        /* ==================================================
+           SEÇÃO 13 — RESPONSIVIDADE PARA CELULARES PEQUENOS
+           Estas regras só são aplicadas em telas de até 360 px.
+        =================================================== */
+
+        @media (max-width: 360px) {
+
+            /* Reduz o espaço interno do painel */
+            .app {
+                padding: 22px 14px;
+                border-radius: 26px;
+            }
+
+            /* Reduz a distância entre os cartões */
+            .categories {
+                gap: 9px;
+            }
+
+            /* Ajusta o espaço interno dos cartões */
+            .category {
+                padding: 14px 10px;
+            }
+
+            /* Reduz o tamanho dos valores */
+            .category .amount {
+                font-size: 15px;
+            }
+
+            /* Ajusta os valores mensais */
+            .month-details {
+                margin-left: 0;
+                gap: 10px;
+            }
+        }
+
+
+        /* ==================================================
+           SEÇÃO 14 — AJUSTES COMPACTOS PARA IPHONE PEQUENO
+           Reduz espaços e fontes para caber melhor na tela.
+        =================================================== */
+
+        .greeting {
+            margin-bottom: 22px;
+        }
+
+        .greeting h1 {
+            font-size: 23px;
+        }
+
+        .categories {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .category {
+            min-width: 0;
+            min-height: 125px;
+            padding: 12px 9px;
+            border-radius: 16px;
+        }
+
+        .category h3 {
+            font-size: 14px;
+        }
+
+        .category .amount {
+            font-size: 14px;
+        }
+
+        .total-banner {
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .total-banner h2 {
+            font-size: 19px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .month-card {
+            padding: 12px;
+        }
+
+        .month-total {
+            font-size: 11px;
+        }
+
+        .month-details {
+            margin-left: 0;
+            gap: 10px;
+        }
+
+        .record-value {
+            font-size: 11px;
+        }
+
+        .footer {
+            padding: 18px 0 12px;
+        }
+
+        /* Em telas muito estreitas, diminui mais o espaço interno. */
+        @media (max-width: 340px) {
+            body {
+                padding: 8px 4px;
+            }
+
+            .app {
+                padding: 20px 12px;
+                border-radius: 32px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- ==================================================
+         SEÇÃO 14 — INÍCIO DO PAINEL PRINCIPAL
+         Todo o conteúdo visual fica dentro de .app.
+    =================================================== -->
+
+    <main class="app">
+
+
+        <!-- ==================================================
+             14.1 — CABEÇALHO
+             Menu, atalhos e letra do perfil.
+        =================================================== -->
+
+        <!-- ==================================================
+             14.2 — TÍTULO E SAUDAÇÃO
+             Altere os textos dentro das tags abaixo.
+        =================================================== -->
+
+        <section class="greeting">
+
+            <!-- Texto pequeno acima do título -->
+            <p class="eyebrow">PAINEL DE CONTROLE</p>
+
+            <!-- Título principal -->
+            <h1>Seu consumo,<br>sob controle!</h1>
+
+            <!-- Descrição do dashboard -->
+            <p>Acompanhe seus gastos de água e energia.</p>
+
+        </section>
+
+
+        <!-- ==================================================
+             14.3 — CARTÕES DE ÁGUA E ENERGIA
+             Os valores vêm do App.py por meio do Flask.
+        =================================================== -->
+
+        <section class="section">
+
+            <!-- Título e atalho da seção -->
+            <div class="section-heading">
+                <h2>Categorias</h2>
+                <a href="#resumo">Ver resumo ↗</a>
+            </div>
+
+            <!-- Agrupamento dos dois cartões -->
+            <div class="categories">
+
+
+                <!-- CARTÃO DE ÁGUA -->
+
+                <article class="category">
+
+                    <!-- Ícone e ano -->
+                    <div class="category-top">
+                        <span class="category-icon">💧</span>
+                        <span class="category-label">2026</span>
+                    </div>
+
+                    <!-- Nome do recurso -->
+                    <p class="category-label">Consumo de</p>
+                    <h3>Água</h3>
+
+                    <!--
+                        VARIÁVEL FLASK: total_agua
+                        É calculada no Python.
+                        O filtro format exibe duas casas decimais.
+                    -->
+                    <p class="amount">
+                        R$ {{ "%.2f"|format(total_agua) }}
+                    </p>
+
+                    <!-- Barra visual decorativa da água -->
+                    <div class="progress">
+                        <span class="water-progress"
+                              style="width: 75%"></span>
+                    </div>
+
+                </article>
+
+
+                <!-- CARTÃO DE ENERGIA -->
+
+                <article class="category">
+
+                    <!-- Ícone e ano -->
+                    <div class="category-top">
+                        <span class="category-icon">⚡</span>
+                        <span class="category-label">2026</span>
+                    </div>
+
+                    <!-- Nome do recurso -->
+                    <p class="category-label">Consumo de</p>
+                    <h3>Energia</h3>
+
+                    <!--
+                        VARIÁVEL FLASK: total_energia
+                        É calculada no Python.
+                    -->
+                    <p class="amount">
+                        R$ {{ "%.2f"|format(total_energia) }}
+                    </p>
+
+                    <!-- Barra visual decorativa da energia -->
+                    <div class="progress">
+                        <span class="energy-progress"
+                              style="width: 60%"></span>
+                    </div>
+
+                </article>
+
+            </div>
+        </section>
+
+
+        <!-- ==================================================
+             14.4 — TOTAL GERAL
+             Mostra a soma dos gastos de água e energia.
+        =================================================== -->
+
+        <section class="total-banner">
+
+            <div>
+
+                <!-- Rótulo do valor -->
+                <p>Gasto total do período</p>
+
+                <!--
+                    VARIÁVEL FLASK: total
+                    Recebe o total_geral calculado no Python.
+                -->
+                <h2>R$ {{ "%.2f"|format(total) }}</h2>
+
+            </div>
+
+            <!-- Ícone decorativo -->
+            <div class="total-icon">💰</div>
+
+        </section>
+
+
+        <!-- ==================================================
+             14.5 — RESUMO MENSAL
+             Percorre a lista resumo_mensal enviada pelo Flask.
+        =================================================== -->
+
+        <section class="section" id="resumo">
+
+            <!-- Cabeçalho da seção -->
+            <div class="section-heading">
+                <h2>Resumo mensal</h2>
+                <span class="category-label">2026</span>
+            </div>
+
+            <!-- Lista de cartões mensais -->
+            <div class="month-list">
+
+                <!--
+                    LOOP JINJA:
+                    Cria um cartão para cada mês da lista.
+                    item é o dicionário de cada mês.
+                -->
+                {% for item in resumo_mensal %}
+
+                <article class="month-card">
+
+                    <!-- Linha superior do cartão -->
+                    <div class="month-top">
+
+                        <!-- Ícone decorativo -->
+                        <div class="month-symbol">▤</div>
+
+                        <!-- Nome e descrição do mês -->
+                        <div class="month-info">
+                            <h3>{{ item.mes }}</h3>
+                            <p>Resumo de despesas</p>
+                        </div>
+
+                        <!-- Total do mês -->
+                        <div class="month-total">
+                            R$ {{ "%.2f"|format(item.total) }}
+                        </div>
+
+                    </div>
+
+                    <!-- Valores separados por recurso -->
+                    <div class="month-details">
+
+                        <!-- Total de água do mês -->
+                        <span class="water-text">
+                            💧 Água
+                            <strong>
+                                R$ {{ "%.2f"|format(item.agua) }}
+                            </strong>
+                        </span>
+
+                        <!-- Total de energia do mês -->
+                        <span class="energy-text">
+                            ⚡ Energia
+                            <strong>
+                                R$ {{ "%.2f"|format(item.energia) }}
+                            </strong>
+                        </span>
+
+                    </div>
+
+                </article>
+
+                <!-- Fim do loop dos meses -->
+                {% endfor %}
+
+            </div>
+        </section>
+
+
+        <!-- ==================================================
+             14.6 — REGISTROS DIÁRIOS
+             Lista expansível com todos os lançamentos.
+        =================================================== -->
+
+        <section class="section" id="detalhes">
+
+            <!-- Cabeçalho da seção -->
+            <div class="section-heading">
+                <h2>Registros diários</h2>
+
+                <!--
+                    contas|length:
+                    Exibe a quantidade de registros recebidos do Python.
+                -->
+                <span class="category-label">
+                    {{ contas|length }} registros
+                </span>
+            </div>
+
+            <!--
+                A tag details permite abrir e fechar a lista
+                sem precisar de JavaScript.
+            -->
+            <details class="details-panel">
+
+                <!-- Cabeçalho clicável da lista -->
+                <summary>Ver todos os gastos</summary>
+
+                <!-- Conteúdo interno da lista -->
+                <div class="records">
+
+                    <!--
+                        LOOP JINJA:
+                        Percorre os registros da variável contas.
+                        reverse apresenta os mais recentes primeiro.
+                    -->
+                    {% for conta in contas|reverse %}
+
+                    <div class="record">
+
+                        <!--
+                            Escolhe o ícone de acordo com o recurso.
+                            conta[0] é o nome do recurso.
+                        -->
+                        <div class="record-icon">
+                            {% if conta[0] == "Água" %}
+                                💧
+                            {% else %}
+                                ⚡
+                            {% endif %}
+                        </div>
+
+                        <!-- Nome do recurso, data e mês -->
+                        <div class="record-info">
+
+                            <!-- conta[0] = recurso -->
+                            <strong>{{ conta[0] }}</strong>
+
+                            <!-- conta[4] = data; conta[1] = mês -->
+                            <small>
+                                {{ conta[4] }} · {{ conta[1] }}
+                            </small>
+
+                        </div>
+
+                        <!-- conta[3] = valor do lançamento -->
+                        <div class="record-value">
+                            R$ {{ "%.2f"|format(conta[3]) }}
+                        </div>
+
+                    </div>
+
+                    <!-- Fim do loop dos registros -->
+                    {% else %}
+
+                    <!-- Mensagem se a lista estiver vazia -->
+                    <p class="empty">Nenhum registro disponível.</p>
+
+                    {% endfor %}
+
+                </div>
+            </details>
+
+        </section>
+        <!-- RODAPÉ: identificação do dashboard -->
+        <footer class="footer">
+            Economiza Ai · Dashboard de Água e Energia · 2026
+        </footer>
+
+    </main>
+</body>
+</html>
